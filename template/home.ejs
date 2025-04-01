@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agence de Vehicules</title>
+    <style>
+        .agence {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .actions {
+            margin-top: 10px;
+        }
+        form {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            max-width: 500px;
+        }
+        label, input {
+            display: block;
+            margin-bottom: 10px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            margin-right: 5px;
+        }
+        .edit-form {
+            display: none;
+            margin-top: 10px;
+            background-color: #f9f9f9;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Liste des agences</h1>
+    
+    <% if (agences.length === 0) { %>
+        <p>Aucune agence renseignée</p>
+    <% } else { %>
+        <% agences.forEach(agence => { %>
+            <div class="agence">
+                <h3><%= agence.nom %></h3>
+                <div>Adresse: <%= agence.adresse %></div>
+                <div>Téléphone: <%= agence.tel %></div>
+                <div>Email: <%= agence.email %></div>
+                <div class="actions">
+                    <a href="/vehicules/agence/<%= agence.id %>">Voir les véhicules</a>
+                    
+                    <button type="button" onclick="document.getElementById('editForm<%= agence.id %>').style.display='block'">Modifier</button>
+                    
+                    <form action="/agence/<%= agence.id %>/delete" method="POST" style="display: inline;">
+                        <button type="submit">Supprimer</button>
+                    </form>
+                </div>
+                
+                <div id="editForm<%= agence.id %>" class="edit-form">
+                    <h4>Modifier l'agence</h4>
+                    <form action="/agence/<%= agence.id %>/update" method="POST">
+                        <label for="nom<%= agence.id %>">Nom:</label>
+                        <input type="text" id="nom<%= agence.id %>" name="nom" value="<%= agence.nom %>" required>
+                        
+                        <label for="adresse<%= agence.id %>">Adresse:</label>
+                        <input type="text" id="adresse<%= agence.id %>" name="adresse" value="<%= agence.adresse %>" required>
+                        
+                        <label for="tel<%= agence.id %>">Téléphone:</label>
+                        <input type="text" id="tel<%= agence.id %>" name="tel" value="<%= agence.tel %>" required>
+                        
+                        <label for="email<%= agence.id %>">Email:</label>
+                        <input type="email" id="email<%= agence.id %>" name="email" value="<%= agence.email %>" required>
+                        
+                        <button type="submit">Enregistrer</button>
+                        <button type="button" onclick="document.getElementById('editForm<%= agence.id %>').style.display='none'">Annuler</button>
+                    </form>
+                </div>
+            </div>
+        <% }) %>
+    <% } %>
+
+    <h2>Ajouter une nouvelle agence</h2>
+    <form action="/agence" method="POST">
+        <label for="nom">Nom:</label>
+        <input type="text" id="nom" name="nom" required>
+        
+        <label for="adresse">Adresse:</label>
+        <input type="text" id="adresse" name="adresse" required>
+        
+        <label for="tel">Téléphone:</label>
+        <input type="text" id="tel" name="tel" required>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        
+        <button type="submit">Ajouter</button>
+    </form>
+</body>
+</html>

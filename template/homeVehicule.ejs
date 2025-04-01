@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Véhicules</title>
+    <style>
+        .vehicule {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .actions {
+            margin-top: 10px;
+        }
+        form {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            max-width: 500px;
+        }
+        label, input, select {
+            display: block;
+            margin-bottom: 10px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            margin-right: 5px;
+        }
+        .edit-form {
+            display: none;
+            margin-top: 10px;
+            background-color: #f9f9f9;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Liste des véhicules</h1>
+    <a href="/agences">Retour à la liste des agences</a>
+    
+    <% if (vehicules.length === 0) { %>
+        <p>Aucun véhicule renseigné</p>
+    <% } else { %>
+        <% vehicules.forEach(vehicule => { %>
+            <div class="vehicule">
+                <h3><%= vehicule.marque %> <%= vehicule.modele %></h3>
+                <div>Immatriculation: <%= vehicule.immatriculation %></div>
+                <div>Année: <%= vehicule.annee %></div>
+                <div>Statut: <%= vehicule.statut %></div>
+                <div>Prix par jour: <%= vehicule.prixJour %> €</div>
+                <div>ID Agence: <%= vehicule.idAgence %></div>
+                <div class="actions">
+                    <button onclick="toggleEditForm<%= vehicule.id %>()">Modifier</button>
+                    
+                    <form action="/vehicule/<%= vehicule.id %>/delete" method="POST" style="display: inline;">
+                        <button type="submit">Supprimer</button>
+                    </form>
+                </div>
+                
+                <div id="editForm<%= vehicule.id %>" class="edit-form">
+                    <h4>Modifier le véhicule</h4>
+                    <form action="/vehicule/<%= vehicule.id %>/update" method="POST">
+                        <label for="marque<%= vehicule.id %>">Marque:</label>
+                        <input type="text" id="marque<%= vehicule.id %>" name="marque" value="<%= vehicule.marque %>" required>
+                        
+                        <label for="modele<%= vehicule.id %>">Modèle:</label>
+                        <input type="text" id="modele<%= vehicule.id %>" name="modele" value="<%= vehicule.modele %>" required>
+                        
+                        <label for="immatriculation<%= vehicule.id %>">Immatriculation:</label>
+                        <input type="text" id="immatriculation<%= vehicule.id %>" name="immatriculation" value="<%= vehicule.immatriculation %>" required>
+                        
+                        <label for="annee<%= vehicule.id %>">Année:</label>
+                        <input type="number" id="annee<%= vehicule.id %>" name="annee" value="<%= vehicule.annee %>" required>
+                        
+                        <label for="statut<%= vehicule.id %>">Statut:</label>
+                        <select id="statut<%= vehicule.id %>" name="statut" required>
+                            <option value="Disponible" <%= vehicule.statut === 'Disponible' ? 'selected' : '' %>>Disponible</option>
+                            <option value="Loué" <%= vehicule.statut === 'Loué' ? 'selected' : '' %>>Loué</option>
+                            <option value="Réparation" <%= vehicule.statut === 'Réparation' ? 'selected' : '' %>>En réparation</option>
+                        </select>
+                        
+                        <label for="prixJour<%= vehicule.id %>">Prix par jour (€):</label>
+                        <input type="number" step="0.01" id="prixJour<%= vehicule.id %>" name="prixJour" value="<%= vehicule.prixJour %>" required>
+                        
+                        <label for="idAgence<%= vehicule.id %>">Agence:</label>
+                        <select id="idAgence<%= vehicule.id %>" name="idAgence" required>
+                            <% agences.forEach(agence => { %>
+                                <option value="<%= agence.id %>" <%= vehicule.idAgence === agence.id ? 'selected' : '' %>><%= agence.nom %></option>
+                            <% }) %>
+                        </select>
+                        
+                        <button type="submit">Enregistrer</button>
+                        <button type="button" onclick="toggleEditForm<%= vehicule.id %>()">Annuler</button>
+                    </form>
+                </div>
+                
+                <script>
+                    function toggleEditForm<%= vehicule.id %>() {
+                        var form = document.getElementById('editForm<%= vehicule.id %>');
+                        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+                    }
+                </script>
+            </div>
+        <% }) %>
+    <% } %>
+
+    <h2>Ajouter un nouveau véhicule</h2>
+    <form action="/vehicule" method="POST">
+        <label for="marque">Marque:</label>
+        <input type="text" id="marque" name="marque" required>
+        
+        <label for="modele">Modèle:</label>
+        <input type="text" id="modele" name="modele" required>
+        
+        <label for="immatriculation">Immatriculation:</label>
+        <input type="text" id="immatriculation" name="immatriculation" required>
+        
+        <label for="annee">Année:</label>
+        <input type="number" id="annee" name="annee" required>
+        
+        <label for="statut">Statut:</label>
+        <select id="statut" name="statut" required>
+            <option value="Disponible">Disponible</option>
+            <option value="Loué">Loué</option>
+            <option value="Réparation">En réparation</option>
+        </select>
+        
+        <label for="prixJour">Prix par jour (€):</label>
+        <input type="number" step="0.01" id="prixJour" name="prixJour" required>
+        
+        <label for="idAgence">Agence:</label>
+        <select id="idAgence" name="idAgence" required>
+            <% agences.forEach(agence => { %>
+                <option value="<%= agence.id %>"><%= agence.nom %></option>
+            <% }) %>
+        </select>
+        
+        <button type="submit">Ajouter</button>
+    </form>
+</body>
+</html>
