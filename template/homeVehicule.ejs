@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -52,7 +51,7 @@
                 <div>Prix par jour: <%= vehicule.prixJour %> €</div>
                 <div>ID Agence: <%= vehicule.idAgence %></div>
                 <div class="actions">
-                    <button onclick="toggleEditForm<%= vehicule.id %>()">Modifier</button>
+                    <button type="button" onclick="document.getElementById('editForm<%= vehicule.id %>').style.display='block'">Modifier</button>
                     
                     <form action="/vehicule/<%= vehicule.id %>/delete" method="POST" style="display: inline;">
                         <button type="submit">Supprimer</button>
@@ -92,16 +91,9 @@
                         </select>
                         
                         <button type="submit">Enregistrer</button>
-                        <button type="button" onclick="toggleEditForm<%= vehicule.id %>()">Annuler</button>
+                        <button type="button" onclick="document.getElementById('editForm<%= vehicule.id %>').style.display='none'">Annuler</button>
                     </form>
                 </div>
-                
-                <script>
-                    function toggleEditForm<%= vehicule.id %>() {
-                        var form = document.getElementById('editForm<%= vehicule.id %>');
-                        form.style.display = form.style.display === 'block' ? 'none' : 'block';
-                    }
-                </script>
             </div>
         <% }) %>
     <% } %>
